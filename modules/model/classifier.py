@@ -32,18 +32,17 @@ class CoralSegmentationModel(nn.Module):
         self.device = torch.device(
             "cuda" if torch.cuda.is_available() else "cpu")
 
-        # Select ResNet-HDC backbone
-        if self.config["ResNetModel"] == 18:
+        if self.config["resnet"]["ResNetModel"] == 18:
             resnet_model = ResNet18_HDC
-        elif self.config["ResNetModel"] == 101:
+        elif self.config["resnet"]["ResNetModel"] == 101:
             resnet_model = ResNet101_HDC
         else:
             raise ValueError("Invalid ResNet Configuration (Use 18 or 101)")
 
+
         # Load cached model if specified
         if self.config["UseCachedModel"]:
-            self.model = torch.load(
-                self.config["ModelFilepath"], weights_only=False)
+            self.model = torch.load(self.config["ModelFilepath"], weights_only=False)
             print(f"Using cached model at {self.config['ModelFilepath']}")
         else:
             self.model = resnet_model().to(self.device)

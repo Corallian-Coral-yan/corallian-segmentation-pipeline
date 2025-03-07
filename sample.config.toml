@@ -1,0 +1,28 @@
+UseCachedModel = false
+ModelFilepath = ""
+
+[training]
+DoTraining = true
+TrainImageDir = "E:/DLSU/[PC] Coral 'yan!/data/MASKED-CORALS/CoralMask/train/images"
+TrainMaskDir = "E:/DLSU/[PC] Coral 'yan!/data/MASKED-CORALS/CoralMask/train/output_masks"
+ValImageDir = "E:/DLSU/[PC] Coral 'yan!/data/MASKED-CORALS/CoralMask/test/images"
+ValMaskDir = "E:/DLSU/[PC] Coral 'yan!/data/MASKED-CORALS/CoralMask/test/output_masks"
+BatchSize = 8
+LearningRate = 0.0001
+NumEpochs = 50
+
+[resnet]
+ResNetModel = 18
+
+[aspp]
+ASPPEnabled = true
+ASPPInChannels = 512
+ASPPOutChannels = 256
+AtrousRates = [6, 12, 18]
+
+[duc]
+DUCEnabled = true
+DUCUpFactor = 2
+
+[model]
+NumClasses = 1

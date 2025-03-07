@@ -104,7 +104,7 @@ class ResidualHDCBlock_D(nn.Module):
         # Main path
         self.conv_1x1_reduce = conv_bn_ac(in_channels=in_channels, out_channels=num_1x1a, kernel_size=1, stride=2)
 
-        self.conv_3x3 = conv_bn_ac(in_channels=num_1x1a, out_channels=num_3x3b, kernel_size=3, pad=1)
+        self.conv_3x3 = conv_bn_ac(in_channels=num_1x1a, out_channels=num_3x3b, kernel_size=3, padding=1)
         
         self.conv_1x1_increase = conv_bn_ac(in_channels=num_3x3b, out_channels=num_1x1c, kernel_size=1)
         self.relu = nn.ReLU()
