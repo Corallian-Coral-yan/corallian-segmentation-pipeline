@@ -23,6 +23,25 @@ class DiceLoss(nn.Module):
         return 1 - num / den  # Dice Loss
 
 
+def compute_iou(pred, target, threshold=0.5):
+    # Binarize predictions
+    pred_bin = (pred > threshold).float()
+    intersection = (pred_bin * target).sum(dim=(1, 2, 3))
+    union = pred_bin.sum(dim=(1, 2, 3)) + \
+        target.sum(dim=(1, 2, 3)) - intersection
+    iou = (intersection + 1e-6) / (union + 1e-6)
+    return iou.mean().item()
+
+
+def compute_dice(pred, target, threshold=0.5):
+    pred_bin = (pred > threshold).float()
+    intersection = (pred_bin * target).sum(dim=(1, 2, 3))
+    dice = (2. * intersection + 1e-6) / \
+        (pred_bin.sum(dim=(1, 2, 3)) + target.sum(dim=(1, 2, 3)) + 1e-6)
+    return dice.mean().item()
+
+
+
 def train(config):
     if config["training"]["DoTraining"]:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -73,8 +92,7 @@ def train(config):
             print(f"\nEpoch {epoch+1} started.")
 
             for batch_idx, (images, masks) in enumerate(train_loader):
-                print(
-                    f"  Batch {batch_idx+1}/{len(train_loader)}: loading data")
+                # print(f"  Batch {batch_idx+1}/{len(train_loader)}: loading data")
                 images, masks = images.to(device), masks.to(device)
                 optimizer.zero_grad()
 
@@ -96,19 +114,25 @@ def train(config):
 
         # Optional inference snippet...
         model.eval()
-        print("\nRunning inference example on the validation set...")
+
+        total_iou, total_dice = 0.0, 0.0
+        num_batches = 0
         with torch.no_grad():
-            for batch_idx, (images, masks) in enumerate(val_loader):
-                print(f"  Processing validation batch {batch_idx+1}")
+            for images, masks in val_loader:
                 images, masks = images.to(device), masks.to(device)
                 outputs = model(images)
                 outputs = F.interpolate(
                     outputs, size=masks.shape[-2:], mode='bilinear', align_corners=False)
-                preds = (torch.sigmoid(outputs) > 0.5).float()
-                print(f"    Predictions shape: {preds.shape}")
-                break
+                total_iou += compute_iou(torch.sigmoid(outputs), masks)
+                total_dice += compute_dice(torch.sigmoid(outputs), masks)
+                num_batches += 1
+        avg_iou = total_iou / num_batches
+        avg_dice = total_dice / num_batches
+        print(f"Validation IoU: {avg_iou:.4f}, Dice Score: {avg_dice:.4f}")
+
 
         os.makedirs("models", exist_ok=True)
+        
         torch.save(model.state_dict(), "models/coral_segmentation.pth")
         print("Model saved successfully!")
 

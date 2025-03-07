@@ -32,6 +32,7 @@ class CoralSegmentationModel(nn.Module):
         self.device = torch.device(
             "cuda" if torch.cuda.is_available() else "cpu")
 
+        # Select ResNet backbone
         if self.config["resnet"]["ResNetModel"] == 18:
             resnet_model = ResNet18_HDC
         elif self.config["resnet"]["ResNetModel"] == 101:
@@ -39,17 +40,19 @@ class CoralSegmentationModel(nn.Module):
         else:
             raise ValueError("Invalid ResNet Configuration (Use 18 or 101)")
 
+        # Initialize ResNet model
+        self.feature_extractor = resnet_model().to(self.device)
 
         # Load cached model if specified
         if self.config["UseCachedModel"]:
-            self.model = torch.load(self.config["ModelFilepath"], weights_only=False)
-            print(f"Using cached model at {self.config['ModelFilepath']}")
-        else:
-            self.model = resnet_model().to(self.device)
+            model_path = self.config["ModelFilepath"]
+            print(f"Using cached model at {model_path}")
+            self.feature_extractor.load_state_dict(
+                torch.load(model_path, map_location=self.device))
 
-        # Extract feature maps from ResNet (excluding last classification layers)
+        # Extract feature maps from ResNet (excluding classification layers)
         self.feature_extractor = nn.Sequential(
-            *list(self.model.children())[:-2])
+            *list(self.feature_extractor.children())[:-2])
 
         # ASPP Configuration
         aspp_config = self.config["aspp"]
@@ -82,7 +85,8 @@ class CoralSegmentationModel(nn.Module):
         # 1x1 Convolution for segmentation mask output
         self.num_classes = self.config["model"]["NumClasses"]
         self.segmentation_head = nn.Conv2d(
-            in_channels=self.aspp_out_channels, out_channels=self.num_classes, kernel_size=1)
+            in_channels=self.aspp_out_channels, out_channels=self.num_classes, kernel_size=1
+        )
 
     def forward(self, x):
         x = self.feature_extractor(x)  # ResNet-HDC backbone
