@@ -144,7 +144,7 @@ def full_train(config):
 
 # Load config and start training
 def main():
-    print("Loading configuration...")
+    print(f"Loading configuration...")
     with open("config.toml", "rb") as f:
         config = tomllib.load(f)
     print("Configuration loaded.")
