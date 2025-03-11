@@ -46,12 +46,16 @@ module load anaconda
 
 ## Main job. Run your codes and executables here; `srun` is optional.
 ## Checking
-# echo "Checking installed dependencies in corallian-env..."
+echo "Activating corallian-env..."
 conda activate corallian-env
+echo "==============================="
+echo ""
 
 ## Check Python version and location
 echo "Python location: $(which python)"
 echo "Python version: $(python --version)"
+echo "==============================="
+echo ""
 
 ## List all installed packages using conda
 # echo "Installed packages (conda list):"
@@ -63,6 +67,8 @@ echo "Python version: $(python --version)"
 
 echo "Running debug-train.py..."
 python debug-train.py
+echo "==============================="
+echo ""
 
 echo "Running train.py..."
 python train.py
