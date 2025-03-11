@@ -10,7 +10,6 @@ def main():
     print("[DEBUG] Starting debug script...")
 
     # ✅ Check GPU availability
-
     print("\n[DEBUG] PyTorch CUDA Info:")
     print(f"  - CUDA Available: {torch.cuda.is_available()}")
     print(f"  - CUDA Device Count: {torch.cuda.device_count()}")

@@ -48,17 +48,6 @@ def train(config):
 
     # Set device (force CUDA if available)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-    # Debugging GPU info
-    print("\n[DEBUG] PyTorch CUDA Info:")
-    print(f"  - CUDA Available: {torch.cuda.is_available()}")
-    print(f"  - CUDA Device Count: {torch.cuda.device_count()}")
-    if torch.cuda.is_available():
-        print(f"  - Using GPU: {torch.cuda.get_device_name(0)}")
-        print(f"  - Current CUDA Device: {torch.cuda.current_device()}")
-    else:
-        print("[ERROR] CUDA is not available. Training will fail.")
-
     print(f"\nUsing device: {device}")
 
     # Initialize model and move to GPU
