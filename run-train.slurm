@@ -7,7 +7,7 @@
 #SBATCH --ntasks=1
 #SBATCH --job-name="[Corallian] Segmentation Pipeline"
 #SBATCH --output="run-train-segmentation.out"
-#SBATCH --error=""run-train-segmentation.err"
+#SBATCH --error="run-train-segmentation.err"
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=jana_bantolino@dlsu.edu.ph
 
