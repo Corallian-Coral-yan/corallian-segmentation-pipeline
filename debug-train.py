@@ -10,8 +10,18 @@ def main():
     print("[DEBUG] Starting debug script...")
 
     # ✅ Check GPU availability
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"[DEBUG] Using device: {device}")
+
+    print("\n[DEBUG] PyTorch CUDA Info:")
+    print(f"  - CUDA Available: {torch.cuda.is_available()}")
+    print(f"  - CUDA Device Count: {torch.cuda.device_count()}")
+    if torch.cuda.is_available():
+        print(f"  - Using GPU: {torch.cuda.get_device_name(0)}")
+        print(f"  - Current CUDA Device: {torch.cuda.current_device()}")
+        device = torch.device("cuda")
+        print(f"[DEBUG] Using device: {device}")
+        
+    else:
+        print("[ERROR] CUDA is not available. Training will fail.")
 
     # ✅ Load configuration
     try:
