@@ -38,6 +38,10 @@ def main():
         )
         print(
             f"[DEBUG] Train dataset loaded successfully. Size: {len(train_dataset)}")
+        print(
+            f"[DEBUG] Train image directory: {config['training']['TrainImageDir']}")
+        print(
+            f"[DEBUG] Train mask directory: {config['training']['TrainMaskDir']}")
     except Exception as e:
         print(f"[ERROR] Train dataset loading failed: {e}")
         return
@@ -49,6 +53,10 @@ def main():
         )
         print(
             f"[DEBUG] Validation dataset loaded successfully. Size: {len(val_dataset)}")
+        print(
+            f"[DEBUG] Validation image directory: {config['training']['ValImageDir']}")
+        print(
+            f"[DEBUG] Validation mask directory: {config['training']['ValMaskDir']}")
     except Exception as e:
         print(f"[ERROR] Validation dataset loading failed: {e}")
         return
@@ -67,6 +75,7 @@ def main():
     except Exception as e:
         print(f"[ERROR] Failed to load batch from train_loader: {e}")
         return
+
 
     # ✅ Test model forward pass
     try:
