@@ -9,8 +9,7 @@ from torch.utils.data import DataLoader
 from modules.model.classifier import CoralSegmentationModel
 from modules.data.dataset import CoralSegmentationDataset
 
-
-# ✅ Dice Loss for better segmentation results
+# Dice Loss for better segmentation results
 class DiceLoss(nn.Module):
     def __init__(self, smooth=1e-6):
         super(DiceLoss, self).__init__()
@@ -137,13 +136,13 @@ def train(config):
         print("Model saved successfully!")
 
 
-# ✅ Full training pipeline (Preprocessing + Training)
+# Full training pipeline (Preprocessing + Training)
 def full_train(config):
     train(config)
     print("Done")
 
 
-# ✅ Load config and start training
+# Load config and start training
 def main():
     print("Loading configuration...")
     with open("config.toml", "rb") as f:
