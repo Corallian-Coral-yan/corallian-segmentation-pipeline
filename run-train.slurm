@@ -61,6 +61,9 @@ echo "Python version: $(python --version)"
 # echo "Installed packages (pip list):"
 # python -m pip list
 
+echo "Running debug-train.py..."
+python debug-train.py
+
 echo "Running train.py..."
 python train.py
 conda deactivate
