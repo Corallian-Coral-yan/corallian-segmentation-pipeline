@@ -71,7 +71,7 @@ echo "==============================="
 echo ""
 
 echo "Running train.py..."
-python train.py
+python -u train.py
 conda deactivate
 
 ## Flush the TMPDIR.
