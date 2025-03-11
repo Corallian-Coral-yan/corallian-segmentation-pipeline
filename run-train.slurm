@@ -1,5 +1,7 @@
 #!/bin/bash
-#SBATCH --partition=serial
+#SBATCH --partition=gpu
+#SBATCH --qos=gpu-p40_default
+#SBATCH --gres=gpu:p40:1
 
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
