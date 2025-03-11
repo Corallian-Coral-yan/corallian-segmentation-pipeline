@@ -45,10 +45,25 @@ module purge
 module load anaconda
 
 ## Main job. Run your codes and executables here; `srun` is optional.
-mamba init
-mamba activate corallian-env
+## Checking
+# echo "Checking installed dependencies in corallian-env..."
+conda activate corallian-env
+
+## Check Python version and location
+echo "Python location: $(which python)"
+echo "Python version: $(python --version)"
+
+## List all installed packages using conda
+# echo "Installed packages (conda list):"
+# conda list
+
+## List all installed packages using pip
+# echo "Installed packages (pip list):"
+# python -m pip list
+
+echo "Running train.py..."
 python train.py
-mamba deactivate
+conda deactivate
 
 ## Flush the TMPDIR.
 if [[ $custom_tmp == "yes" ]]; then
