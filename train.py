@@ -43,7 +43,8 @@ def compute_dice(pred, target, threshold=0.5):
 
 def train(config):
     if config["training"]["DoTraining"]:
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        device = torch.device("cpu")
         print(f"Using device: {device}")
 
         # Use full config for model initialization
