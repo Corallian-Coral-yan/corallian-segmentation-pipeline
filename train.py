@@ -67,10 +67,10 @@ def train(config):
         print(f"Validation dataset size: {len(val_dataset)}")
 
         train_loader = DataLoader(
-            train_dataset, batch_size=config["training"]["BatchSize"], shuffle=True, num_workers=0
+            train_dataset, batch_size=config["training"]["BatchSize"], shuffle=True, num_workers=8
         )
         val_loader = DataLoader(
-            val_dataset, batch_size=config["training"]["BatchSize"], shuffle=False, num_workers=0
+            val_dataset, batch_size=config["training"]["BatchSize"], shuffle=False, num_workers=8
         )
 
         print("DataLoaders created.")
