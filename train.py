@@ -10,8 +10,6 @@ from modules.model.classifier import CoralSegmentationModel
 from modules.data.dataset import CoralSegmentationDataset
 
 # Dice Loss for better segmentation results
-
-
 class DiceLoss(nn.Module):
     def __init__(self, smooth=1e-6):
         super(DiceLoss, self).__init__()

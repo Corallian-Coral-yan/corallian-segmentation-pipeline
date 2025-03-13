@@ -1,5 +1,10 @@
 UseCachedModel = false
-ModelFilepath = ""
+ModelFilepath = "path/to/your_model.pth"
+
+[processing]
+InputFolder = "input_images"
+OutputFolder = "output_masks"
+ImageSize = 512
 
 [training]
 DoTraining = true
