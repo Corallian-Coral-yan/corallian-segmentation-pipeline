@@ -10,19 +10,17 @@ from modules.model.classifier import CoralSegmentationModel  # Import your model
 CONFIG_PATH = "config.toml"
 config = toml.load(CONFIG_PATH)
 
-# Set device
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load model
+
+
 def load_model():
     if not config["ModelFilepath"]:
         raise ValueError(
             "ModelFilepath is empty. Please set it in config.toml.")
 
-    # Initialize model with config
     model = CoralSegmentationModel(config)
-
-    # Load trained weights
     model.load_state_dict(torch.load(
         config["ModelFilepath"], map_location=DEVICE))
     model.to(DEVICE)
@@ -30,12 +28,15 @@ def load_model():
     return model
 
 # Image preprocessing
+
+
 def preprocess_image(image_path):
     image = cv2.imread(image_path)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Convert to RGB
     transform = transforms.Compose([
         transforms.ToPILImage(),
-        transforms.Resize((512, 512)),  # Adjust size as needed
+        transforms.Resize(
+            (config["processing"]["ImageSize"], config["processing"]["ImageSize"])),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[
                              0.229, 0.224, 0.225])
@@ -43,38 +44,40 @@ def preprocess_image(image_path):
     return transform(image).unsqueeze(0)  # Add batch dimension
 
 # Perform segmentation
-def segment_image(model, image_path, output_folder):
+def segment_image(model, image_path, output_path):
     image_tensor = preprocess_image(image_path).to(DEVICE)
     with torch.no_grad():
         output = model(image_tensor)
 
-    # Convert to binary mask
-    mask = torch.sigmoid(output).cpu().numpy()[0, 0]  # Assuming single-class
-    mask = (mask > 0.5).astype(np.uint8) * 255  # Thresholding
+    mask = torch.sigmoid(output).cpu().numpy()[
+        0, 0]  # Assuming single-class output
+    mask = (mask > 0.5).astype(np.uint8) * 255  # Convert to binary mask
 
-    # Save result
-    os.makedirs(output_folder, exist_ok=True)
-    filename = os.path.basename(image_path)
-    output_path = os.path.join(output_folder, f"seg_{filename}")
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
     cv2.imwrite(output_path, mask)
     print(f"Saved segmented image: {output_path}")
 
-# Process folder
-
-
+# Process the root folder recursively
 def segment_folder():
-    input_folder = config["inference"]["ImageDir"]
-    output_folder = config["inference"]["OutputDir"]
+    input_root = config["inference"]["InputRoot"]
+    output_root = config["inference"]["OutputRoot"]
 
-    if not os.path.exists(input_folder):
-        raise FileNotFoundError(f"Input folder not found: {input_folder}")
+    if not os.path.exists(input_root):
+        raise FileNotFoundError(f"Input folder not found: {input_root}")
 
     model = load_model()
 
-    for filename in os.listdir(input_folder):
-        if filename.lower().endswith((".png", ".jpg", ".jpeg")):
-            image_path = os.path.join(input_folder, filename)
-            segment_image(model, image_path, output_folder)
+    for root, _, files in os.walk(input_root):
+        for filename in files:
+            if filename.lower().endswith((".png", ".jpg", ".jpeg")):
+                input_path = os.path.join(root, filename)
+
+                # Preserve relative folder structure
+                relative_path = os.path.relpath(root, input_root)
+                output_folder = os.path.join(output_root, relative_path)
+                output_path = os.path.join(output_folder, f"seg_{filename}")
+
+                segment_image(model, input_path, output_path)
 
 
 if __name__ == "__main__":
