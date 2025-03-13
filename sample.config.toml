@@ -1,7 +1,7 @@
 UseCachedModel = false
 ModelFilepath = "path/to/your_model.pth"
 
-[processing]
+[inference]
 InputRoot = "input_images"
 OutputRoot = "output_masks"
 ImageSize = 512

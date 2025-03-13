@@ -6,7 +6,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --job-name="[Corallian] Segmentation Pipeline"
-#SBATCH --output="run-segmentation.out"
+#SBATCH --output="run-segmentation.out" 
 #SBATCH --error="run-segmentation.err"
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=jana_bantolino@dlsu.edu.ph
