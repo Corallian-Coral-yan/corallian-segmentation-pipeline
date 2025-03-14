@@ -1,9 +1,8 @@
-UseCachedModel = false
-ModelFilepath = "path/to/your_model.pth"
+ModelFilepath = "E:\OneDrive\OneDrive - De La Salle University - Manila\000 Coral' yan!\00 Pipeline\corallian-segmentation-pipeline\models\coral_segmentation.pth"
 
 [inference]
-InputRoot = "input_images"
-OutputRoot = "output_masks"
+InputRoot = "E:\DLSU\[PC] Coral 'yan!\data\ORIGINAL (aka MONITORING)\2024 (COMPLETE)"
+OutputRoot = "E:\DLSU\[PC] Coral 'yan!\data\SEGMENTED-CORALS-NOT-CROPPED"
 ImageSize = 512
 
 [training]

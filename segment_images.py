@@ -46,7 +46,7 @@ def preprocess_image(image_path):
 
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Convert to RGB
 
-    img_size = config["processing"]["ImageSize"]
+    img_size = config["inference"]["ImageSize"]
     transform = transforms.Compose([
         transforms.ToPILImage(),
         transforms.Resize((img_size, img_size)),
