@@ -31,6 +31,8 @@ def load_model():
     model.eval()
 
     print(f"Model loaded from: {model_path}")
+    # Debugging output
+    print(f"Model is on: {next(model.parameters()).device}")
     return model
 
 
@@ -47,15 +49,15 @@ def preprocess_image(image_path):
     img_size = config["processing"]["ImageSize"]
     transform = transforms.Compose([
         transforms.ToPILImage(),
-        # Resize to expected model input
         transforms.Resize((img_size, img_size)),
         transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[
-                             0.229, 0.224, 0.225])
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
 
     # Add batch dimension and move to device
     return transform(image).unsqueeze(0).to(DEVICE)
+    print(f"Image tensor is on: {tensor_image.device}")  # Debugging output
+    return tensor_image
 
 
 # Perform segmentation
@@ -63,10 +65,10 @@ def segment_image(model, image_path, output_path):
     image_tensor = preprocess_image(image_path)
 
     with torch.no_grad():
-        output = model(image_tensor)
+        # Ensure input is on the right device
+        output = model(image_tensor.to(DEVICE))
 
     # Convert output to binary mask
-    # Assuming single-channel output
     mask = torch.sigmoid(output).cpu().numpy()[0, 0]
     mask = (mask > 0.5).astype(np.uint8) * 255  # Convert to binary (0 or 255)
 
