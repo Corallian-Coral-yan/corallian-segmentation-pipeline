@@ -65,17 +65,23 @@ def segment_image(model, image_path, output_path):
     image_tensor = preprocess_image(image_path)
 
     with torch.no_grad():
-        # Ensure input is on the right device
         output = model(image_tensor.to(DEVICE))
 
     # Convert output to binary mask
     mask = torch.sigmoid(output).cpu().numpy()[0, 0]
     mask = (mask > 0.5).astype(np.uint8) * 255  # Convert to binary (0 or 255)
 
+    # Resize mask back to original image size
+    original_image = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
+    original_h, original_w = original_image.shape[:2]
+    mask = cv2.resize(mask, (original_w, original_h),
+                      interpolation=cv2.INTER_NEAREST)
+
     # Ensure output directory exists
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     cv2.imwrite(output_path, mask.astype(np.uint8))
     print(f"Saved segmented image: {output_path}")
+
 
 
 # Process the root folder recursively
